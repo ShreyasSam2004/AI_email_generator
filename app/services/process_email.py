@@ -1,3 +1,4 @@
+import os
 import logging
 from dotenv import load_dotenv
 
@@ -73,11 +74,20 @@ def send_digest_email(hours: int = 24, top_n: int = 10) -> dict:
         html_content = digest_to_html(result)
         
         subject = f"Daily AI News Digest - {result.introduction.greeting.split('for ')[-1] if 'for ' in result.introduction.greeting else 'Today'}"
-        
+
+        # Get recipients from environment variable (comma-separated)
+        # Falls back to MY_EMAIL if RECIPIENT_EMAILS not set
+        recipient_emails = os.getenv("RECIPIENT_EMAILS")
+        if recipient_emails:
+            recipients = [email.strip() for email in recipient_emails.split(",")]
+        else:
+            recipients = None  # Will use MY_EMAIL as default
+
         send_email(
             subject=subject,
             body_text=markdown_content,
-            body_html=html_content
+            body_html=html_content,
+            recipients=recipients
         )
         
         logger.info("Email sent successfully!")
