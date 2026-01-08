@@ -1,12 +1,7 @@
 [build]
 builder = "NIXPACKS"
-buildCommand = "pip install -e ."
 
 [deploy]
-startCommand = "python main.py"
-restartPolicyType = "ON_FAILURE"
-restartPolicyMaxRetries = 3
-
-[[crons]]
-schedule = "0 9 * * *"
-command = "python main.py"
+# This service runs once and exits (cron job)
+startCommand = "python run_once.py"
+restartPolicyType = "NEVER"

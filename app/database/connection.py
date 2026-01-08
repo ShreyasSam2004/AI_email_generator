@@ -6,6 +6,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def get_database_url() -> str:
+    # Railway provides DATABASE_URL, use it if available
+    database_url = os.getenv("DATABASE_URL")
+    if database_url:
+        # Railway uses postgresql:// but SQLAlchemy needs postgresql://
+        return database_url.replace("postgres://", "postgresql://")
+
+    # Fallback to individual environment variables (for local development)
     user = os.getenv("POSTGRES_USER", "postgres")
     password = os.getenv("POSTGRES_PASSWORD", "postgres")
     host = os.getenv("POSTGRES_HOST", "localhost")
