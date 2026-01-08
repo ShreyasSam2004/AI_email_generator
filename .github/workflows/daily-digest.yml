@@ -1,0 +1,40 @@
+name: Daily AI News Digest
+
+on:
+  schedule:
+    # Runs at 9 AM UTC every day (adjust timezone as needed)
+    - cron: '0 9 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  send-digest:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install uv
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+    - name: Install dependencies
+      run: uv sync
+
+    - name: Run daily digest pipeline
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+        POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+        POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+        MY_EMAIL: ${{ secrets.MY_EMAIL }}
+        APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
+      run: uv run python main.py
