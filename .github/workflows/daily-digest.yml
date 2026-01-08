@@ -27,6 +27,15 @@ jobs:
     - name: Install dependencies
       run: uv sync
 
+    - name: Create database tables (if not exists)
+      env:
+        POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+        POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
+        POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+      run: uv run python create_new_tables.py
+
     - name: Run daily digest pipeline
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
