@@ -27,6 +27,11 @@ jobs:
     - name: Install dependencies
       run: uv sync
 
+    - name: Test OpenAI API key
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      run: uv run python test_openai.py
+
     - name: Create database tables (if not exists)
       env:
         POSTGRES_USER: ${{ secrets.POSTGRES_USER }}

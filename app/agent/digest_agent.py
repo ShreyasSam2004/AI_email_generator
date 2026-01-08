@@ -45,5 +45,7 @@ class DigestAgent:
 
             return response.choices[0].message.parsed
         except Exception as e:
-            print(f"Error generating digest: {e}")
+            print(f"Error generating digest: {type(e).__name__}: {e}")
+            import traceback
+            traceback.print_exc()
             return None
