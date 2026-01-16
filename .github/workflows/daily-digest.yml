@@ -51,4 +51,5 @@ jobs:
         POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
         MY_EMAIL: ${{ secrets.MY_EMAIL }}
         APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
+        RECIPIENT_EMAILS: ${{ secrets.RECIPIENT_EMAILS }}
       run: uv run python main.py
