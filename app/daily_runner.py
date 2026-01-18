@@ -72,10 +72,15 @@ def run_daily_pipeline(hours: int = 24, top_n: int = 10) -> dict:
         logger.info("\n[5/5] Generating and sending email digest...")
         email_result = send_digest_email(hours=hours, top_n=top_n)
         results["email"] = email_result
-        
+
         if email_result["success"]:
             logger.info(f"✓ Email sent successfully with {email_result['articles_count']} articles")
             results["success"] = True
+        elif email_result.get("error") == "No digests available":
+            # No news today is not a failure - just nothing to report
+            logger.info("ℹ No new content to send today - skipping email")
+            results["success"] = True  # Pipeline succeeded, just no content
+            results["no_content"] = True
         else:
             logger.error(f"✗ Failed to send email: {email_result.get('error', 'Unknown error')}")
         
@@ -95,7 +100,10 @@ def run_daily_pipeline(hours: int = 24, top_n: int = 10) -> dict:
     logger.info(f"Scraped: {results['scraping']}")
     logger.info(f"Processed: {results['processing']}")
     logger.info(f"Digests: {results['digests']}")
-    logger.info(f"Email: {'Sent' if results['success'] else 'Failed'}")
+    if results.get("no_content"):
+        logger.info("Email: Skipped (no new content)")
+    else:
+        logger.info(f"Email: {'Sent' if results['success'] else 'Failed'}")
     logger.info("=" * 60)
     
     return results
