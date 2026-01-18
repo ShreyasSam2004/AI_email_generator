@@ -6,6 +6,11 @@ from app.scrapers.anthropic import AnthropicScraper, AnthropicArticle
 from app.scrapers.venturebeat import VentureBeatScraper, VentureBeatArticle
 from app.scrapers.techcrunch import TechCrunchScraper, TechCrunchArticle
 from app.scrapers.sciencedaily import ScienceDailyScraper, ScienceDailyArticle
+from app.scrapers.mit_tech_review import MITTechReviewScraper, MITTechReviewArticle
+from app.scrapers.wired import WiredScraper, WiredArticle
+from app.scrapers.ars_technica import ArsTechnicaScraper, ArsTechnicaArticle
+from app.scrapers.theverge import TheVergeScraper, TheVergeArticle
+from app.scrapers.hackernews import HackerNewsScraper, HackerNewsArticle
 from app.database.repository import Repository
 
 
@@ -16,6 +21,11 @@ def run_scrapers(hours: int = 24) -> dict:
     venturebeat_scraper = VentureBeatScraper()
     techcrunch_scraper = TechCrunchScraper()
     sciencedaily_scraper = ScienceDailyScraper()
+    mit_scraper = MITTechReviewScraper()
+    wired_scraper = WiredScraper()
+    ars_scraper = ArsTechnicaScraper()
+    theverge_scraper = TheVergeScraper()
+    hackernews_scraper = HackerNewsScraper()
     repo = Repository()
 
     youtube_videos = []
@@ -41,6 +51,11 @@ def run_scrapers(hours: int = 24) -> dict:
     venturebeat_articles = venturebeat_scraper.get_articles(hours=hours)
     techcrunch_articles = techcrunch_scraper.get_articles(hours=hours)
     sciencedaily_articles = sciencedaily_scraper.get_articles(hours=hours)
+    mit_articles = mit_scraper.get_articles(hours=hours)
+    wired_articles = wired_scraper.get_articles(hours=hours)
+    ars_articles = ars_scraper.get_articles(hours=hours)
+    theverge_articles = theverge_scraper.get_articles(hours=hours)
+    hackernews_articles = hackernews_scraper.get_articles(hours=hours)
     
     if video_dicts:
         repo.bulk_create_youtube_videos(video_dicts)
@@ -115,6 +130,76 @@ def run_scrapers(hours: int = 24) -> dict:
         ]
         repo.bulk_create_sciencedaily_articles(article_dicts)
 
+    if mit_articles:
+        article_dicts = [
+            {
+                "guid": a.guid,
+                "title": a.title,
+                "url": a.url,
+                "published_at": a.published_at,
+                "description": a.description,
+                "category": a.category
+            }
+            for a in mit_articles
+        ]
+        repo.bulk_create_mit_tech_review_articles(article_dicts)
+
+    if wired_articles:
+        article_dicts = [
+            {
+                "guid": a.guid,
+                "title": a.title,
+                "url": a.url,
+                "published_at": a.published_at,
+                "description": a.description,
+                "category": a.category
+            }
+            for a in wired_articles
+        ]
+        repo.bulk_create_wired_articles(article_dicts)
+
+    if ars_articles:
+        article_dicts = [
+            {
+                "guid": a.guid,
+                "title": a.title,
+                "url": a.url,
+                "published_at": a.published_at,
+                "description": a.description,
+                "category": a.category
+            }
+            for a in ars_articles
+        ]
+        repo.bulk_create_ars_technica_articles(article_dicts)
+
+    if theverge_articles:
+        article_dicts = [
+            {
+                "guid": a.guid,
+                "title": a.title,
+                "url": a.url,
+                "published_at": a.published_at,
+                "description": a.description,
+                "category": a.category
+            }
+            for a in theverge_articles
+        ]
+        repo.bulk_create_theverge_articles(article_dicts)
+
+    if hackernews_articles:
+        article_dicts = [
+            {
+                "guid": a.guid,
+                "title": a.title,
+                "url": a.url,
+                "published_at": a.published_at,
+                "description": a.description,
+                "category": a.category
+            }
+            for a in hackernews_articles
+        ]
+        repo.bulk_create_hackernews_articles(article_dicts)
+
     return {
         "youtube": youtube_videos,
         "openai": openai_articles,
@@ -122,6 +207,11 @@ def run_scrapers(hours: int = 24) -> dict:
         "venturebeat": venturebeat_articles,
         "techcrunch": techcrunch_articles,
         "sciencedaily": sciencedaily_articles,
+        "mit_tech_review": mit_articles,
+        "wired": wired_articles,
+        "ars_technica": ars_articles,
+        "theverge": theverge_articles,
+        "hackernews": hackernews_articles,
     }
 
 
@@ -133,3 +223,8 @@ if __name__ == "__main__":
     print(f"VentureBeat articles: {len(results['venturebeat'])}")
     print(f"TechCrunch articles: {len(results['techcrunch'])}")
     print(f"ScienceDaily articles: {len(results['sciencedaily'])}")
+    print(f"MIT Tech Review articles: {len(results['mit_tech_review'])}")
+    print(f"Wired articles: {len(results['wired'])}")
+    print(f"Ars Technica articles: {len(results['ars_technica'])}")
+    print(f"The Verge articles: {len(results['theverge'])}")
+    print(f"Hacker News articles: {len(results['hackernews'])}")

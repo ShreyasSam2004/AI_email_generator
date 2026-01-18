@@ -42,14 +42,26 @@ def run_daily_pipeline(hours: int = 24, top_n: int = 10) -> dict:
             "anthropic": len(scraping_results.get("anthropic", [])),
             "venturebeat": len(scraping_results.get("venturebeat", [])),
             "techcrunch": len(scraping_results.get("techcrunch", [])),
-            "sciencedaily": len(scraping_results.get("sciencedaily", []))
+            "sciencedaily": len(scraping_results.get("sciencedaily", [])),
+            "mit_tech_review": len(scraping_results.get("mit_tech_review", [])),
+            "wired": len(scraping_results.get("wired", [])),
+            "ars_technica": len(scraping_results.get("ars_technica", [])),
+            "theverge": len(scraping_results.get("theverge", [])),
+            "hackernews": len(scraping_results.get("hackernews", []))
         }
-        logger.info(f"✓ Scraped {results['scraping']['youtube']} YouTube videos, "
-                    f"{results['scraping']['openai']} OpenAI articles, "
-                    f"{results['scraping']['anthropic']} Anthropic articles, "
-                    f"{results['scraping']['venturebeat']} VentureBeat articles, "
-                    f"{results['scraping']['techcrunch']} TechCrunch articles, "
-                    f"{results['scraping']['sciencedaily']} ScienceDaily articles")
+        total_articles = sum(results["scraping"].values())
+        logger.info(f"✓ Scraped {total_articles} total articles:")
+        logger.info(f"  - YouTube: {results['scraping']['youtube']}")
+        logger.info(f"  - OpenAI: {results['scraping']['openai']}")
+        logger.info(f"  - Anthropic: {results['scraping']['anthropic']}")
+        logger.info(f"  - VentureBeat: {results['scraping']['venturebeat']}")
+        logger.info(f"  - TechCrunch: {results['scraping']['techcrunch']}")
+        logger.info(f"  - ScienceDaily: {results['scraping']['sciencedaily']}")
+        logger.info(f"  - MIT Tech Review: {results['scraping']['mit_tech_review']}")
+        logger.info(f"  - Wired: {results['scraping']['wired']}")
+        logger.info(f"  - Ars Technica: {results['scraping']['ars_technica']}")
+        logger.info(f"  - The Verge: {results['scraping']['theverge']}")
+        logger.info(f"  - Hacker News: {results['scraping']['hackernews']}")
         
         logger.info("\n[2/5] Processing Anthropic markdown...")
         anthropic_result = process_anthropic_markdown()

@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta, timezone
 from typing import List, Optional, Dict, Any
 from sqlalchemy.orm import Session
-from .models import YouTubeVideo, OpenAIArticle, AnthropicArticle, VentureBeatArticle, TechCrunchArticle, ScienceDailyArticle, Digest
+from .models import (YouTubeVideo, OpenAIArticle, AnthropicArticle, VentureBeatArticle,
+                     TechCrunchArticle, ScienceDailyArticle, MITTechReviewArticle,
+                     WiredArticle, ArsTechnicaArticle, TheVergeArticle, HackerNewsArticle, Digest)
 from .connection import get_session
 
 
@@ -169,7 +171,97 @@ class Repository:
             self.session.add_all(new_articles)
             self.session.commit()
         return len(new_articles)
-    
+
+    def bulk_create_mit_tech_review_articles(self, articles: List[dict]) -> int:
+        new_articles = []
+        for a in articles:
+            existing = self.session.query(MITTechReviewArticle).filter_by(guid=a["guid"]).first()
+            if not existing:
+                new_articles.append(MITTechReviewArticle(
+                    guid=a["guid"],
+                    title=a["title"],
+                    url=a["url"],
+                    published_at=a["published_at"],
+                    description=a.get("description", ""),
+                    category=a.get("category")
+                ))
+        if new_articles:
+            self.session.add_all(new_articles)
+            self.session.commit()
+        return len(new_articles)
+
+    def bulk_create_wired_articles(self, articles: List[dict]) -> int:
+        new_articles = []
+        for a in articles:
+            existing = self.session.query(WiredArticle).filter_by(guid=a["guid"]).first()
+            if not existing:
+                new_articles.append(WiredArticle(
+                    guid=a["guid"],
+                    title=a["title"],
+                    url=a["url"],
+                    published_at=a["published_at"],
+                    description=a.get("description", ""),
+                    category=a.get("category")
+                ))
+        if new_articles:
+            self.session.add_all(new_articles)
+            self.session.commit()
+        return len(new_articles)
+
+    def bulk_create_ars_technica_articles(self, articles: List[dict]) -> int:
+        new_articles = []
+        for a in articles:
+            existing = self.session.query(ArsTechnicaArticle).filter_by(guid=a["guid"]).first()
+            if not existing:
+                new_articles.append(ArsTechnicaArticle(
+                    guid=a["guid"],
+                    title=a["title"],
+                    url=a["url"],
+                    published_at=a["published_at"],
+                    description=a.get("description", ""),
+                    category=a.get("category")
+                ))
+        if new_articles:
+            self.session.add_all(new_articles)
+            self.session.commit()
+        return len(new_articles)
+
+    def bulk_create_theverge_articles(self, articles: List[dict]) -> int:
+        new_articles = []
+        for a in articles:
+            existing = self.session.query(TheVergeArticle).filter_by(guid=a["guid"]).first()
+            if not existing:
+                new_articles.append(TheVergeArticle(
+                    guid=a["guid"],
+                    title=a["title"],
+                    url=a["url"],
+                    published_at=a["published_at"],
+                    description=a.get("description", ""),
+                    category=a.get("category")
+                ))
+        if new_articles:
+            self.session.add_all(new_articles)
+            self.session.commit()
+        return len(new_articles)
+
+    def bulk_create_hackernews_articles(self, articles: List[dict]) -> int:
+        new_articles = []
+        for a in articles:
+            existing = self.session.query(HackerNewsArticle).filter_by(guid=a["guid"]).first()
+            if not existing:
+                new_articles.append(HackerNewsArticle(
+                    guid=a["guid"],
+                    title=a["title"],
+                    url=a["url"],
+                    published_at=a["published_at"],
+                    description=a.get("description", ""),
+                    category=a.get("category")
+                ))
+        if new_articles:
+            self.session.add_all(new_articles)
+            self.session.commit()
+        return len(new_articles)
+
     def get_anthropic_articles_without_markdown(self, limit: Optional[int] = None) -> List[AnthropicArticle]:
         query = self.session.query(AnthropicArticle).filter(AnthropicArticle.markdown.is_(None))
         if limit:
@@ -282,6 +374,71 @@ class Repository:
             if key not in seen_ids:
                 articles.append({
                     "type": "sciencedaily",
+                    "id": article.guid,
+                    "title": article.title,
+                    "url": article.url,
+                    "content": article.description or "",
+                    "published_at": article.published_at
+                })
+
+        mit_articles = self.session.query(MITTechReviewArticle).all()
+        for article in mit_articles:
+            key = f"mit_tech_review:{article.guid}"
+            if key not in seen_ids:
+                articles.append({
+                    "type": "mit_tech_review",
+                    "id": article.guid,
+                    "title": article.title,
+                    "url": article.url,
+                    "content": article.description or "",
+                    "published_at": article.published_at
+                })
+
+        wired_articles = self.session.query(WiredArticle).all()
+        for article in wired_articles:
+            key = f"wired:{article.guid}"
+            if key not in seen_ids:
+                articles.append({
+                    "type": "wired",
+                    "id": article.guid,
+                    "title": article.title,
+                    "url": article.url,
+                    "content": article.description or "",
+                    "published_at": article.published_at
+                })
+
+        ars_articles = self.session.query(ArsTechnicaArticle).all()
+        for article in ars_articles:
+            key = f"ars_technica:{article.guid}"
+            if key not in seen_ids:
+                articles.append({
+                    "type": "ars_technica",
+                    "id": article.guid,
+                    "title": article.title,
+                    "url": article.url,
+                    "content": article.description or "",
+                    "published_at": article.published_at
+                })
+
+        theverge_articles = self.session.query(TheVergeArticle).all()
+        for article in theverge_articles:
+            key = f"theverge:{article.guid}"
+            if key not in seen_ids:
+                articles.append({
+                    "type": "theverge",
+                    "id": article.guid,
+                    "title": article.title,
+                    "url": article.url,
+                    "content": article.description or "",
+                    "published_at": article.published_at
+                })
+
+        hackernews_articles = self.session.query(HackerNewsArticle).all()
+        for article in hackernews_articles:
+            key = f"hackernews:{article.guid}"
+            if key not in seen_ids:
+                articles.append({
+                    "type": "hackernews",
                     "id": article.guid,
                     "title": article.title,
                     "url": article.url,

@@ -80,6 +80,66 @@ class ScienceDailyArticle(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
 
+class MITTechReviewArticle(Base):
+    __tablename__ = "mit_tech_review_articles"
+
+    guid = Column(String, primary_key=True)
+    title = Column(String, nullable=False)
+    url = Column(String, nullable=False)
+    description = Column(Text)
+    published_at = Column(DateTime, nullable=False)
+    category = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class WiredArticle(Base):
+    __tablename__ = "wired_articles"
+
+    guid = Column(String, primary_key=True)
+    title = Column(String, nullable=False)
+    url = Column(String, nullable=False)
+    description = Column(Text)
+    published_at = Column(DateTime, nullable=False)
+    category = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class ArsTechnicaArticle(Base):
+    __tablename__ = "ars_technica_articles"
+
+    guid = Column(String, primary_key=True)
+    title = Column(String, nullable=False)
+    url = Column(String, nullable=False)
+    description = Column(Text)
+    published_at = Column(DateTime, nullable=False)
+    category = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class TheVergeArticle(Base):
+    __tablename__ = "theverge_articles"
+
+    guid = Column(String, primary_key=True)
+    title = Column(String, nullable=False)
+    url = Column(String, nullable=False)
+    description = Column(Text)
+    published_at = Column(DateTime, nullable=False)
+    category = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class HackerNewsArticle(Base):
+    __tablename__ = "hackernews_articles"
+
+    guid = Column(String, primary_key=True)
+    title = Column(String, nullable=False)
+    url = Column(String, nullable=False)
+    description = Column(Text)
+    published_at = Column(DateTime, nullable=False)
+    category = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
 class Digest(Base):
     __tablename__ = "digests"
 
